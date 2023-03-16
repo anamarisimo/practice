@@ -39,15 +39,8 @@ public class RectanglePointSearcher {
             {
                 if(skippedOneRectangle)
                 {
-                    Rectangle potentiallyCorrectOverlap = getOverlapArea(current, rectangles[2]);
-                    if(i==3 && potentiallyCorrectOverlap!=null)
-                    {
-                        current = potentiallyCorrectOverlap;
-                    }
-                    else
-                        return null;
+                    return null;
                 }
-
                 else
                 {
                     skippedOneRectangle = true;

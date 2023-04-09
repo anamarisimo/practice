@@ -1,70 +1,19 @@
 import java.io.PrintStream;
 
 public class BinarySearchTree<Key extends Comparable<Key>, Value> {
-    private TreeNode<Key, Value> root;
+    protected TreeNode<Key, Value> root;
 
     public TreeNode<Key, Value> getRoot()
     {
         return root;
     }
-    private String traversePreOrder(TreeNode<Key, Value> node) {
 
-        if (root == null) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(root.getValue());
-
-        String pointerRight = "└──";
-        String pointerLeft = (node.getRightChild() != null) ? "├──" : "└──";
-
-        traverseNodes(sb, "", pointerLeft, node.getLeftChild(), node.getRightChild() != null);
-        traverseNodes(sb, "", pointerRight, node.getRightChild(), false);
-
-        return sb.toString();
-    }
-    private void traverseNodes(StringBuilder sb, String padding, String pointer, TreeNode<Key, Value> node,
-                              boolean hasRightSibling) {
-        if (node != null) {
-            sb.append("\n");
-            sb.append(padding);
-            sb.append(pointer);
-            sb.append(node.getValue());
-
-            StringBuilder paddingBuilder = new StringBuilder(padding);
-            if (hasRightSibling) {
-                paddingBuilder.append("│  ");
-            } else {
-                paddingBuilder.append("   ");
-            }
-
-            String paddingForBoth = paddingBuilder.toString();
-            String pointerRight = "└──";
-            String pointerLeft = (node.getRightChild() != null) ? "├──" : "└──";
-
-            traverseNodes(sb, paddingForBoth, pointerLeft, node.getLeftChild(), node.getRightChild() != null);
-            traverseNodes(sb, paddingForBoth, pointerRight, node.getRightChild(), false);
-        }
-    }
-    public void print() {
-        PrintStream os = new PrintStream(System.out);
-        os.print(traversePreOrder(root));
-    }
     public Value get(Key key)
     {
         TreeNode<Key, Value> searched = get(key, root);
         return searched == null ? root.getValue() : searched.getValue();
     }
 
-    public void printTree(TreeNode<Key, Value> node, String prefix)
-    {
-        if(node == null) return;
-
-        System.out.println(prefix + " + " + node.getValue());
-        printTree(node.getLeftChild() , prefix + " ");
-        printTree(node.getRightChild() , prefix + " ");
-    }
 
     public TreeNode<Key, Value> getNode(Key key)
     {
@@ -74,14 +23,14 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
 
     public TreeNode<Key, Value> getSuccessor(TreeNode<Key, Value> node)
     {
-        if(hasRightSubtree(node))
+        if(node.hasRightSubtree())
         {
             return getMin(node.getRightChild());
         }
         else
         {
             TreeNode<Key, Value> current = node;
-            while(isRightChild(current))
+            while(current.isRightChild())
             {
                 current = current.getParent();
             }
@@ -91,60 +40,19 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
 
     public TreeNode<Key, Value> getPredecessor(TreeNode<Key, Value> node)
     {
-        if(hasLeftSubtree(node))
+        if(node.hasLeftSubtree())
         {
             return getMax(node.getLeftChild());
         }
         else
         {
             TreeNode<Key, Value> current = node;
-            while(isLeftChild(current))
+            while(current.isLeftChild())
             {
                 current = current.getParent();
             }
             return current.getParent();
         }
-    }
-
-    private boolean isRightChild(TreeNode<Key, Value> node)
-    {
-        return node.getParent()!=null && node.getParent().getRightChild() == node;
-    }
-
-    private boolean isLeftChild(TreeNode<Key, Value> node)
-    {
-        return node.getParent()!=null && node.getParent().getLeftChild() == node;
-    }
-
-    private boolean isRoot(TreeNode<Key, Value> node)
-    {
-        return node.getParent()==null;
-    }
-
-    private boolean hasRightSubtree(TreeNode<Key, Value> node)
-    {
-        return node.getRightChild()!=null;
-    }
-
-    private boolean hasLeftSubtree(TreeNode<Key, Value> node)
-    {
-        return node.getLeftChild()!=null;
-    }
-
-
-    private void replaceTargetWithRightSubtreeMin(TreeNode<Key, Value> targetNode, Key key)
-    {
-        TreeNode<Key, Value> replacementNode = null;
-        replacementNode = getMin(targetNode.getRightChild());
-        TreeNode<Key, Value> parentReplacementNode = getParentOf(key, targetNode);
-        targetNode.setKey(replacementNode.getKey());
-        targetNode.setValue(replacementNode.getValue());
-        if(replacementNode.getRightChild()!=null)
-        {
-            parentReplacementNode.setLeftChild(replacementNode.getRightChild());
-        }
-        else
-            parentReplacementNode.setLeftChild(null);
     }
 
     public void delete(Key key)
@@ -184,10 +92,24 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
         else
         {
             if(isLeftChild)
-                targetNodeParent.setLeftChild(null);
+                targetNodeParent.removeLeftChild();
             else
-                targetNodeParent.setRightChild(null);
+                targetNodeParent.removeRightChild();
         }
+    }
+    private void replaceTargetWithRightSubtreeMin(TreeNode<Key, Value> targetNode, Key key)
+    {
+        TreeNode<Key, Value> replacementNode = null;
+        replacementNode = getMin(targetNode.getRightChild());
+        TreeNode<Key, Value> parentReplacementNode = getParentOf(key, targetNode);
+        targetNode.setKey(replacementNode.getKey());
+        targetNode.setValue(replacementNode.getValue());
+        if(replacementNode.getRightChild()!=null)
+        {
+            parentReplacementNode.setLeftChild(replacementNode.getRightChild());
+        }
+        else
+            parentReplacementNode.removeLeftChild();
     }
 
     public Value getMin()
@@ -242,13 +164,15 @@ public class BinarySearchTree<Key extends Comparable<Key>, Value> {
            else
                node = node.getRightChild();
        }
+        TreeNode<Key, Value> newNode = new TreeNode<>(key, val, 0);
+        newNode.setParent(nodePrev);
 
        if(nodePrev.getKey().compareTo(key) < 0)
        {
-           nodePrev.setRightChild(new TreeNode<>(key, val, 0));
+           nodePrev.setRightChild(newNode);
        }
        else
-           nodePrev.setLeftChild(new TreeNode<>(key, val, 0));
+           nodePrev.setLeftChild(newNode);
     }
 
     private TreeNode<Key, Value> get(Key key, TreeNode<Key, Value> node)

@@ -1,48 +1,15 @@
+import javax.xml.crypto.dsig.keyinfo.KeyValue;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class RedBlackTree<Key extends Comparable<Key>, Value>
+public class RedBlackTree<Key extends Comparable<Key>, Value> extends BinarySearchTree<Key, Value>
 {
     private TreeNode<Key, Value> root;
 
-    public TreeNode<Key, Value> getRoot()
-    {
-        return root;
-    }
-
-    public TreeNode<Key, Value> getNode(Key key)
-    {
-        return get(key, root);
-    }
 
     public void insert(Key key, Value value)
     {
         insert(new TreeNode<>(key, value, 0));
-    }
-    public void printTree(TreeNode<Key, Value> node, String prefix)
-    {
-        if(node == null) return;
-
-        System.out.println(prefix + " + " + node.getValue());
-        printTree(node.getLeftChild() , prefix + " ");
-        printTree(node.getRightChild() , prefix + " ");
-    }
-    public void print()
-    {
-        TreeNode<Key, Value> node = root;
-        Queue<TreeNode<Key, Value>> nodes = new LinkedList<>();
-        nodes.add(root);
-        while(!nodes.isEmpty())
-        {
-            node = nodes.poll();
-            System.out.print(node.getValue());
-            if(node.getLeftChild()!=null)
-                nodes.add(node.getLeftChild());
-            if(node.getRightChild()!=null)
-                nodes.add(node.getRightChild());
-            System.out.println("");
-        }
-
     }
 
     private void insert(TreeNode<Key, Value> node)
@@ -131,6 +98,7 @@ public class RedBlackTree<Key extends Comparable<Key>, Value>
         else
             node.setColour("black");
     }
+
     private TreeNode<Key, Value> get(Key key, TreeNode<Key, Value> startNode)
     {
         TreeNode<Key, Value> node = startNode;

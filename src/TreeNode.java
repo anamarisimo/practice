@@ -6,6 +6,7 @@ public class TreeNode<Key extends Comparable<Key>, Value> {
     private TreeNode<Key, Value> parent;
     private String colour;
     private int numberOfChildren;
+    private int height;
 
     public TreeNode(Key key, Value value, int nrChildren) {
         _key = key;
@@ -16,6 +17,16 @@ public class TreeNode<Key extends Comparable<Key>, Value> {
 
     public TreeNode<Key, Value> getLeftChild() {
         return leftChild;
+    }
+
+    public boolean hasLeftSubtree()
+    {
+        return leftChild != null;
+    }
+
+    public boolean hasRightSubtree()
+    {
+        return rightChild != null;
     }
 
     public boolean isLeftChild() {
@@ -36,11 +47,21 @@ public class TreeNode<Key extends Comparable<Key>, Value> {
     public TreeNode<Key, Value> getParent() {
         return parent;
     }
+    public void setParent(TreeNode<Key, Value> parent) {
 
-    public void setLeftChild(TreeNode<Key, Value> lChild) {
-        leftChild = lChild;
-        lChild.parent = this;
+        this.parent = parent;
     }
+
+
+    public void removeLeftChild()
+    {
+        leftChild=null;
+    }
+    public void removeRightChild()
+    {
+        rightChild=null;
+    }
+
 
     public TreeNode<Key, Value> getRightChild() {
         return rightChild;
@@ -48,6 +69,20 @@ public class TreeNode<Key extends Comparable<Key>, Value> {
 
     public int getNrChildren() {
         return numberOfChildren;
+    }
+
+    public int getHeight() {
+        return this.height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+    public void incrementHeight() {
+        this.height = this.height+1;
+    }
+    public void decrementHeight() {
+        this.height = this.height-1;
     }
 
     public void incrementNrChildren() {
@@ -59,6 +94,43 @@ public class TreeNode<Key extends Comparable<Key>, Value> {
         if(rChild!=null)
             rChild.parent = this;
     }
+
+    public void setLeftChild(TreeNode<Key, Value> lChild) {
+        leftChild = lChild;
+        if(lChild!=null)
+            lChild.parent = this;
+    }
+
+    public int getBalance()
+    {
+        int rightSubtreeHeight = hasRightSubtree() ? getRightChild().height : -1;
+        int leftSubtreeHeight = hasLeftSubtree() ? getLeftChild().height : -1;
+        return leftSubtreeHeight - rightSubtreeHeight;
+    }
+
+    public boolean isBalanced()
+    {
+        int balance = getBalance();
+        return Math.abs(balance) < 2;
+    }
+
+    public boolean isLeftHeavy()
+    {
+        int balance = getBalance();
+        return balance > 0;
+    }
+    public boolean isRightHeavy()
+    {
+        int balance = getBalance();
+        return balance < 0;
+    }
+
+    public boolean isPerfectlyBalanced()
+    {
+        int balance = getBalance();
+        return balance == 0;
+    }
+
 
     public void setKey(Key key) {
         _key=key;

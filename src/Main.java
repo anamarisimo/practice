@@ -35,9 +35,24 @@ public class Main {
         //test_quickselect();
 
         //test_insertionSort();
-        test_bst();
+        //test_bst();
         //test_redblack();
 
+        test_avl();
+
+    }
+    private static void test_avl()
+    {
+        AVLTree<Integer, Integer> avl = new AVLTree<>();
+        System.out.println("insert");
+        avl.insert(1,1);
+        avl.insert(2,2);
+        avl.insert(3,3);
+        avl.insert(4,4);
+        avl.insert(0,0);
+        avl.insert(5,5);
+        avl.insert(-1,-1);
+        BSTPrinter.printTree(avl.getRoot(), null, false);
     }
     private static void test_redblack()
     {
@@ -45,7 +60,7 @@ public class Main {
         redBlack.insert(1,1);
         redBlack.insert(2,2);
         redBlack.insert(3,3);
-        redBlack.printTree(redBlack.getRoot(), "");
+        //(redBlack.getRoot(), "");
     }
     private static void test_bst()
     {
@@ -57,7 +72,7 @@ public class Main {
         bst.insert(4, 4);
         bst.insert(3, 3);
         bst.insert(1, 1);
-        bst.print();
+        BSTPrinter.printTree(bst.getRoot(), null, false);
         //bst.delete(0);
         //bst.getParentOf(0);
        // System.out.println(bst.getParentOf(3).getKey());
